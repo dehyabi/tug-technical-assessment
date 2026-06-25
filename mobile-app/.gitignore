@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+android/build/
+ios/Pods/
+*.apk
+*.ipa
+
+# Environment files
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# React Native
+.metro-health-check*

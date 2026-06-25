@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: wellness-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: wellness_db
+      MYSQL_USER: wellness_user
+      MYSQL_PASSWORD: wellness_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "wellness_user", "-pwellness_pass"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - wellness-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: wellness-backend
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=wellness_user
+      - DB_PASSWORD=wellness_pass
+      - DB_NAME=wellness_db
+    ports:
+      - "3001:3001"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command: npm run start:dev
+    networks:
+      - wellness-network
+
+  admin-portal:
+    build:
+      context: ./admin-portal
+      dockerfile: Dockerfile
+    container_name: wellness-admin
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:3001
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    volumes:
+      - ./admin-portal:/app
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev
+    networks:
+      - wellness-network
+
+volumes:
+  mysql_data:
+
+networks:
+  wellness-network:
+    driver: bridge
