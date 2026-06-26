@@ -3,9 +3,19 @@ node_modules/
 
 # Build outputs
 android/build/
-ios/Pods/
+android/app/build/
+android/.gradle/
+android/local.properties
+android/captures/
+android/.cxx/
 *.apk
 *.ipa
+
+# iOS
+ios/Pods/
+ios/build/
+*.xcworkspace
+*.pbxuser
 
 # Environment files
 .env
@@ -14,6 +24,7 @@ ios/Pods/
 # IDE
 .vscode/
 .idea/
+*.iml
 
 # OS
 .DS_Store

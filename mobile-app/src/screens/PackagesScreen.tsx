@@ -21,8 +21,10 @@ export default function PackagesScreen() {
       setError(null);
       const response = await packagesApi.getActivePackages();
       setPackages(response.data);
-    } catch (err) {
-      setError('Failed to load packages. Please try again.');
+    } catch (err: any) {
+      const message =
+        err?.message || 'Failed to load packages. Please try again.';
+      setError(message);
       console.error('Error fetching packages:', err);
     } finally {
       setLoading(false);

@@ -11,28 +11,30 @@ export default function PackageCard({ package: pkg }: PackageCardProps) {
     <View style={styles.card}>
       <View style={styles.header}>
         <Text style={styles.name}>{pkg.name}</Text>
-        <View style={[styles.badge, getCategoryStyle(pkg.category)]}>
-          <Text style={styles.badgeText}>{pkg.category}</Text>
-        </view>
-      </view>
+        <View style={[styles.badge, { backgroundColor: getCategoryColors(pkg.category).bg }]}>
+          <Text style={[styles.badgeText, { color: getCategoryColors(pkg.category).text }]}>
+            {pkg.category}
+          </Text>
+        </View>
+      </View>
       <View style={styles.details}>
-        <Text style={styles.price}>${pkg.price.toFixed(2)}</Text>
+        <Text style={styles.price}>${typeof pkg.price === 'number' ? pkg.price.toFixed(2) : pkg.price}</Text>
         <Text style={styles.duration}>{pkg.duration_minutes} min</Text>
-      </view>
-    </view>
+      </View>
+    </View>
   );
 }
 
-function getCategoryStyle(category: string) {
+function getCategoryColors(category: string) {
   switch (category) {
     case 'massage':
-      return { backgroundColor: '#dbeafe' };
+      return { bg: '#bfdbfe', text: '#1e40af' };   // blue
     case 'facial':
-      return { backgroundColor: '#fce7f3' };
+      return { bg: '#fbcfe8', text: '#9d174d' };   // pink
     case 'fitness':
-      return { backgroundColor: '#dcfce7' };
+      return { bg: '#bbf7d0', text: '#166534' };   // green
     default:
-      return { backgroundColor: '#f3f4f6' };
+      return { bg: '#e5e7eb', text: '#374151' };   // grey
   }
 }
 
@@ -62,9 +64,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   badge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 10,
   },
   badgeText: {
     fontSize: 12,
