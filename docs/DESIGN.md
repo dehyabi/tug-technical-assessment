@@ -242,13 +242,28 @@ I extended the base model with practical fields for a real-world system:
 ### 5. AI Workflow
 
 #### Which AI Tools Used
-- **Cursor/Claude** (simulated via this agent): Scaffolding, boilerplate generation, design review.
-- **Claude Sonnet**: Architecture decisions, API design, prompt refinement.
-- **No Copilot**: Working in environment without IDE integration.
+- **OpenClaw** (integrated with Ollama Cloud, model **kimi-k2**): Initial scaffolding of all three surfaces — backend (NestJS + TypeORM), admin portal (Next.js), and mobile app (React Native). Prompts were sent via a **Telegram bot integration**.
+- **Claude Code** (via Ollama, model **kimi-k2**): Iterative improvements, bug fixes, documentation updates, and refinement of all three projects after the initial OpenClaw build.
+
+#### Workflow Overview
+
+**Phase 1: Initial Build (OpenClaw + Ollama Cloud + kimi-k2)**
+All three projects were bootstrapped using OpenClaw connected to Ollama Cloud. Prompts were sent through Telegram to generate:
+- NestJS backend with TypeORM entities, services, controllers, and DTOs
+- Next.js admin portal with CRUD pages and components
+- React Native mobile app with package listing screen
+- Docker Compose setup for local development
+
+**Phase 2: Refinement (Claude Code + Ollama + kimi-k2)**
+After the initial build, Claude Code (running via Ollama with kimi-k2) was used for:
+- Fixing bugs (e.g., seed duplicate prevention, mobile API filtering logic)
+- Updating documentation (README, DESIGN.md)
+- Improving Docker setup commands and database reset procedures
+- Adding screenshot folder structure recommendations
 
 #### Prompts I'm Proud Of
 
-**Prompt 1: Architecture scaffolding**
+**Prompt 1: Architecture scaffolding (OpenClaw via Telegram)**
 ```
 "Generate a NestJS module structure for a Wellness Package entity with TypeORM. 
 Include: entity with UUID PK, service with CRUD, controller with /admin and /mobile 
@@ -257,7 +272,7 @@ with proper dependency injection."
 ```
 *Why it worked*: Highly specific with file structure expectations. Result needed minimal cleanup.
 
-**Prompt 2: React Native component generation**
+**Prompt 2: React Native component generation (OpenClaw via Telegram)**
 ```
 "Create a React Native FlatList component that fetches packages from an API and 
 displays them as cards. Include: pull-to-refresh, loading state, error handling, 
@@ -265,13 +280,19 @@ and TypeScript interfaces. Use functional components with hooks."
 ```
 *Why it worked*: Specified exact UI patterns and state requirements. Result was production-ready.
 
-**Prompt 3: Docker compose**
+**Prompt 3: Docker compose (OpenClaw via Telegram)**
 ```
 "Write a docker-compose.yml for: NestJS API (port 3001), MySQL 8 (port 3306), 
 with health checks, named volumes, and environment variables from .env files. 
 Include a wait-for-it pattern so API starts after DB is healthy."
 ```
 *Why it worked*: Specified orchestration concerns (health checks, startup order) that are easy to miss.
+
+**Prompt 4: Seed fix (Claude Code)**
+```
+"Fix the seed script to not duplicate data when re-run."
+```
+*Why it worked*: Simple, direct prompt. Claude Code added `repo.clear()` before seeding.
 
 #### Where AI Got It Wrong
 **The mistake**: AI generated a NestJS entity with `@PrimaryGeneratedColumn('uuid')` but used `@Column('decimal')` for price without specifying precision/scale. TypeORM defaulted to DECIMAL(10,0), losing cents.

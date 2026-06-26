@@ -12,7 +12,11 @@ A full-stack wellness package management system with:
 cd tug-technical-assessment
 
 # Start everything (MySQL + Backend + Admin Portal)
-docker-compose up -d
+# Modern Docker (v20.10+)
+docker compose up --build -d
+
+# Legacy Docker Compose (older versions)
+# docker-compose up --build -d
 
 # Backend API: http://localhost:3001
 # Admin Portal: http://localhost:3000
@@ -40,7 +44,11 @@ tug-technical-assessment/
 
 ### 1. Database
 ```bash
-docker-compose up -d mysql
+# Modern Docker
+docker compose up -d mysql
+
+# Legacy Docker Compose
+# docker-compose up -d mysql
 ```
 
 ### 2. Backend
@@ -68,6 +76,50 @@ npm install
 npx react-native run-ios
 # Android
 npx react-native run-android
+```
+
+## Database Reset & Seeding
+
+### Seed sample data
+
+```bash
+cd backend
+npx ts-node src/seed.ts
+```
+
+This inserts 5 default wellness packages (or resets them if they already exist).
+
+### Full database reset (Docker)
+
+To wipe everything and start completely fresh:
+
+```bash
+# 1. Stop all services
+docker compose down
+
+# 2. Delete the MySQL volume
+docker volume rm tug-technical-assessment_mysql_data
+
+# 3. Start fresh
+docker compose up --build -d
+
+# 4. Re-seed
+cd backend && npx ts-node src/seed.ts
+```
+
+> **Legacy Docker Compose users:** Replace `docker compose` with `docker-compose` in the commands above.
+
+### Soft reset (keep container, drop schema)
+
+```bash
+# Drop and recreate the database
+docker exec wellness-mysql mysql -u wellness_user -pwellness_pass -e "DROP DATABASE IF EXISTS wellness_db; CREATE DATABASE wellness_db;"
+
+# Restart backend so TypeORM re-syncs
+docker restart wellness-backend
+
+# Re-seed
+cd backend && npx ts-node src/seed.ts
 ```
 
 ## API Endpoints

@@ -5,6 +5,9 @@ async function seed() {
   await AppDataSource.initialize();
   const repo = AppDataSource.getRepository(WellnessPackage);
 
+  await repo.clear();
+  console.log('Cleared existing packages');
+
   const packages = [
     {
       name: 'Swedish Massage',
